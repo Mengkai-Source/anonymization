@@ -1,0 +1,17 @@
+--- v0.1.3
+Added date anonymizer
+
+--- v0.1.3
+Added pseudonimization
+
+--- V0.1.2
+Added dictionary anonymizer
+
+--- V0.1.1
+Readme improvement and backlog addition
+
+--- V0.1.1
+Readme and pypi config improvement
+
+--- v0.1.0
+Initial version
