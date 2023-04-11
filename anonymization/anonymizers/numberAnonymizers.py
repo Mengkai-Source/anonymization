@@ -23,7 +23,7 @@ class NumberAnonymizer():
         \s*   # Match any following whitespace"""
 
     def anonymize(self, text: str) -> str:
-        return  self.anonymization.regex_anonymizer(text,self.number_regex,'random_number')
+        return  return  self.anonymization.regex_anonymizer(text, self.number_regex, 'port_number') # 'random_number'
 
     #def evaluate(self, text: str) -> str:
     #    matchs = re.finditer(self.number_regex, text)
