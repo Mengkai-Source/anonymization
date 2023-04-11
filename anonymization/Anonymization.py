@@ -26,12 +26,6 @@ class Anonymization:
         if not provider in self.anonDicts:
             self.anonDicts[provider] = defaultdict(getattr(self.faker, provider))
         
-        # print(f'{provider} - {match}')
-        if provider == 'random_number' or provider == 'phone_number' or  provider == 'credit_card_number' or  provider == 'iban':
-            self.anonDicts['number'] = self.anonDicts[provider]
-            self.anonDicts['number'][match] = "[number_removed]"
-        else:
-            self.anonDicts[provider][match] = f"[{provider}_removed]"
         return self.anonDicts[provider][match] #Element is visible only when specific key value is returned (Refer to https://www.digitalocean.com/community/tutorials/python-getattr)
     
     def getPredefine(self, provider: str, match: str) -> str:
@@ -39,13 +33,18 @@ class Anonymization:
         Return the fake equivalent of match using a Faker provider
         
         Example:
-                getPredefine(provider="date", match="09/02/1990") -> "[date_removed]"        
+                getFake(provider="date", match="09/02/1990") -> "2023-01-06"        
         '''
         if not provider in self.anonDicts:
-            self.anonDicts[provider] = {match: f"[{provider}_removed]"}
+            self.anonDicts[provider] = defaultdict(getattr(self.faker, provider))
         
-        print(self.anonDicts, self.anonDicts[provider])
-        return self.anonDicts[provider][match]
+        # print(f'{provider} - {match}')
+        if provider == 'random_number' or provider == 'phone_number' or  provider == 'credit_card_number' or  provider == 'iban':
+            self.anonDicts['number'] = self.anonDicts[provider]
+            self.anonDicts['number'][match] = "[number_removed]"
+        else:
+            self.anonDicts[provider][match] = f"[{provider}_removed]"
+        return self.anonDicts[provider][match] #Element is visible only when specific key value is returned (Refer to https://www.digitalocean.com/community/tutorials/python-getattr)
 
     def replace_all(self, text: str, matchs: Iterable[str], provider: str) -> str:
         '''
@@ -56,7 +55,7 @@ class Anonymization:
         '''
         # if fake:
         for match in matchs:
-            text = text.replace(match, self.getFake(provider, match))
+            text = text.replace(match, f"{self.getFake(provider, match)}")
         #else:
         #for match in matchs:
             #text = text.replace(match, self.getPredefine(provider, match))
