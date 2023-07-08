@@ -53,12 +53,13 @@ class Anonymization:
         Example:
                 replace_all(text="My DOB is 09/02/1990, matchs=['09/02/1990']", provider="date") -> "My DOB is 2023-01-06"
         '''
-        # if fake:
-        for match in matchs:
-            text = text.replace(match, f"{self.getFake(provider, match)}")
-        #else:
+        # Use fake entities for replacement:
         #for match in matchs:
-            #text = text.replace(match, self.getPredefine(provider, match))
+        #    text = text.replace(match, f"{self.getFake(provider, match)}")
+        # Use fixed regular expression for replacement:
+        for match in matchs:
+            # text = text.replace(match, self.getPredefine(provider, match))
+            text = text.replace(match, f"<{provider.upper()}>")
 
         return text
     
