@@ -153,12 +153,6 @@ def augment_anonymize_location(text: str) -> str:
     
     # Map words to tokens
     tokenized_words = tokenizer.tokenize(text, add_special_tokens=False, return_tensors="tf")
-    #word_expand = list()
-    #for key, value in {x : tokenizer.encode(x, add_special_tokens=False) for x in text.split()}.items():
-    #    word_expand.extend([key]*len(value))
-        
-    if len(tokenized_words)!=len(predicted_tokens_classes):
-        print(1, text)
     location_words = [tokenized_words[idx] for idx, ele in enumerate(predicted_tokens_classes) if 'LOC' in ele]
     
     for word in location_words:
@@ -364,7 +358,7 @@ def anonymize_non_us(text: str) -> str:
     return ''.join(list_text)
     
     
-def get_faker(entity_type):
+def get_anonymizer(entity_type):
     
     # https://microsoft.github.io/presidio/supported_entities/
     parse_dict = {
@@ -393,7 +387,7 @@ def get_faker(entity_type):
 
 def entity_anonymize(entity_text: str, analyzer_result: dict) -> str:
     entity_type = analyzer_result.get('entity_type')
-    fake_maker = get_faker(entity_type)
+    fake_maker = get_anonymizer(entity_type)
     if fake_maker is NotImplemented:
         # raise NotImplementedError
         fake_maker = anonymize_non_us
