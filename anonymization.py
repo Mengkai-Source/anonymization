@@ -56,7 +56,7 @@ def anonymize_datetime(text: str, provider='date') -> str:
     """
     Anonymize datetime
     """
-    
+
     # No Number
     if not re.search(r'\d+', text):
         return text
@@ -143,6 +143,7 @@ def augment_anonymize_location(text: str) -> str:
     """
     Detect location
     """
+    
     inputs = tokenizer(text, add_special_tokens=False, return_tensors="tf")
     logits = model(**inputs).logits
     predicted_token_class_ids = tf.math.argmax(logits, axis=-1)
@@ -150,11 +151,15 @@ def augment_anonymize_location(text: str) -> str:
     # Tokens are classified rather then input words, so there are more predicted token classes than words. Multiple token classes might account for the same word
     predicted_tokens_classes = [model.config.id2label[t] for t in predicted_token_class_ids[0].numpy().tolist()]
     
-    word_expand = list()
-    for key, value in {x : tokenizer.encode(x, add_special_tokens=False) for x in text.split()}.items():
-        word_expand.extend([key]*len(value))
-    
-    location_words = [word_expand[idx] for idx, ele in enumerate(predicted_tokens_classes) if 'LOC' in ele]
+    # Map words to tokens
+    tokenized_words = tokenizer.tokenize(text, add_special_tokens=False, return_tensors="tf")
+    #word_expand = list()
+    #for key, value in {x : tokenizer.encode(x, add_special_tokens=False) for x in text.split()}.items():
+    #    word_expand.extend([key]*len(value))
+        
+    if len(tokenized_words)!=len(predicted_tokens_classes):
+        print(1, text)
+    location_words = [tokenized_words[idx] for idx, ele in enumerate(predicted_tokens_classes) if 'LOC' in ele]
     
     for word in location_words:
         if word.lower() in us_states:
@@ -346,8 +351,8 @@ def anonymize_non_us(text: str) -> str:
         for idx, ele in enumerate(list_text):
             if ele.isdigit():
                 list_text[idx] = str(np.random.randint(1, 10))
-            elif ele.isalpha():
-                list_text[idx] = random.choice(string.ascii_letters).upper()
+            #elif ele.isalpha():
+            #    list_text[idx] = random.choice(string.ascii_letters).upper()
     else:
         list_text = list(text)
         for idx, ele in enumerate(list_text):
